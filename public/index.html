@@ -574,6 +574,7 @@
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('hero', event)">Hero Section</button>
                 <button class="tab" onclick="switchTab('about', event)">About</button>
+                <button class="tab" onclick="switchTab('journey', event)">Journey</button>
                 <button class="tab" onclick="switchTab('experience', event)">Experience</button>
                 <button class="tab" onclick="switchTab('testimonials', event)">Testimonials</button>
                 <button class="tab" onclick="switchTab('gallery', event)">Gallery</button>
@@ -655,6 +656,43 @@
                             <button type="submit" class="btn btn-success">Upload Profile Picture</button>
                         </form>
                     </div>
+                </div>
+            </div>
+
+            <!-- Journey Tab -->
+            <div class="tab-content" id="journeyTab">
+                <div class="section">
+                    <h2>Journey / Timeline</h2>
+                    
+                    <h3>Add New Journey Item</h3>
+                    <div class="add-form">
+                        <form id="journeyForm">
+                            <input type="hidden" id="journeyId">
+                            <div class="form-group">
+                                <label>Age / Year *</label>
+                                <input type="text" id="journeyAge" placeholder="e.g., Age 18, 2020, Year 5" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Title *</label>
+                                <input type="text" id="journeyTitle" placeholder="e.g., Started University" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description *</label>
+                                <textarea id="journeyBody" placeholder="Enter a paragraph describing this milestone..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Display Order</label>
+                                <input type="number" id="journeyOrder" value="0" placeholder="0 = first">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success" id="journeySubmitBtn">Add Journey Item</button>
+                                <button type="button" class="btn btn-secondary hidden" id="cancelJourneyEdit" onclick="cancelEditJourney()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <h3>All Journey Items (<span id="journeyCount">0</span>)</h3>
+                    <div class="item-list" id="journeyList"></div>
                 </div>
             </div>
 
@@ -963,6 +1001,7 @@
         async function loadAllData() {
             loadHero();
             loadAbout();
+            loadJourney();
             loadExperiences();
             loadTestimonials();
             loadGallery();
@@ -1090,6 +1129,66 @@
             const data = await apiCall('/about/profile-image', 'DELETE');
             showMessage('adminMessage', data.message);
             loadAbout();
+        }
+
+        async function loadJourney() {
+            const data = await fetch(API_URL + '/journey').then(function(r) { return r.json(); });
+            const list = document.getElementById('journeyList');
+            document.getElementById('journeyCount').textContent = data.length;
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🗺️</div><p>No journey items added yet. Add your first milestone above!</p></div>';
+                return;
+            }
+            
+            list.innerHTML = data.map(function(item) {
+                return '<div class="item"><div class="item-content"><strong>' + item.title + '</strong><span class="badge badge-success">' + item.age + '</span><small>' + item.body.substring(0, 150) + (item.body.length > 150 ? '...' : '') + '</small><div class="item-meta">Order: ' + item.order + ' | Added: ' + new Date(item.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editJourney(' + JSON.stringify(item) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteJourney(\'' + item._id + '\')">Delete</button></div></div>';
+            }).join('');
+        }
+
+        document.getElementById('journeyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('journeyId').value;
+            const journey = {
+                age: document.getElementById('journeyAge').value,
+                title: document.getElementById('journeyTitle').value,
+                body: document.getElementById('journeyBody').value,
+                order: parseInt(document.getElementById('journeyOrder').value)
+            };
+
+            const data = id ? await apiCall('/journey/' + id, 'PUT', journey) : await apiCall('/journey', 'POST', journey);
+
+            showMessage('adminMessage', data.message);
+            e.target.reset();
+            document.getElementById('journeyId').value = '';
+            document.getElementById('journeySubmitBtn').textContent = 'Add Journey Item';
+            document.getElementById('cancelJourneyEdit').classList.add('hidden');
+            loadJourney();
+        });
+
+        function editJourney(item) {
+            document.getElementById('journeyId').value = item._id;
+            document.getElementById('journeyAge').value = item.age;
+            document.getElementById('journeyTitle').value = item.title;
+            document.getElementById('journeyBody').value = item.body;
+            document.getElementById('journeyOrder').value = item.order;
+            document.getElementById('journeySubmitBtn').textContent = 'Update Journey Item';
+            document.getElementById('cancelJourneyEdit').classList.remove('hidden');
+            document.getElementById('journeyForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function deleteJourney(id) {
+            if (!confirm('Are you sure you want to delete this journey item?')) return;
+            const data = await apiCall('/journey/' + id, 'DELETE');
+            showMessage('adminMessage', data.message);
+            loadJourney();
+        }
+
+        function cancelEditJourney() {
+            document.getElementById('journeyForm').reset();
+            document.getElementById('journeyId').value = '';
+            document.getElementById('journeySubmitBtn').textContent = 'Add Journey Item';
+            document.getElementById('cancelJourneyEdit').classList.add('hidden');
         }
 
         async function loadExperiences() {

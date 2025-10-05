@@ -12,6 +12,7 @@ const heroRoutes = require('./routes/hero');
 const experienceRoutes = require('./routes/experience');
 const testimonialRoutes = require('./routes/testimonial');
 const galleryRoutes = require('./routes/gallery');
+const journeyRoutes = require('./routes/journey');
 const contactRoutes = require('./routes/contact');
 
 const app = express();
@@ -64,6 +65,7 @@ app.use('/api/hero', heroRoutes);
 app.use('/api/experience', experienceRoutes);
 app.use('/api/testimonial', testimonialRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/journey', journeyRoutes);
 app.use('/api/contact', contactRoutes);
 
 // Serve admin panel for all other routes

@@ -53,6 +53,15 @@ const gallerySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Journey/Timeline Schema
+const journeySchema = new mongoose.Schema({
+  age: { type: String, required: true },
+  title: { type: String, required: true },
+  body: { type: String, required: true },
+  order: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
+});
+
 // Contact Info Schema
 const contactSchema = new mongoose.Schema({
   email: String,
@@ -68,6 +77,7 @@ const Hero = mongoose.model('Hero', heroSchema);
 const Experience = mongoose.model('Experience', experienceSchema);
 const Testimonial = mongoose.model('Testimonial', testimonialSchema);
 const Gallery = mongoose.model('Gallery', gallerySchema);
+const Journey = mongoose.model('Journey', journeySchema);
 const Contact = mongoose.model('Contact', contactSchema);
 
 module.exports = {
@@ -77,5 +87,6 @@ module.exports = {
   Experience,
   Testimonial,
   Gallery,
+  Journey,
   Contact
 };
