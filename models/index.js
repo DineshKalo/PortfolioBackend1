@@ -9,9 +9,20 @@ const adminSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-// About Section Schema
+// About Section Schema (with profile picture)
 const aboutSchema = new mongoose.Schema({
   content: { type: String, required: true },
+  profileImageUrl: { type: String },
+  profileImageCloudinaryId: { type: String },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Hero Section Schema (background image)
+const heroSchema = new mongoose.Schema({
+  title: { type: String },
+  subtitle: { type: String },
+  backgroundImageUrl: { type: String },
+  backgroundImageCloudinaryId: { type: String },
   updatedAt: { type: Date, default: Date.now }
 });
 
@@ -53,6 +64,7 @@ const contactSchema = new mongoose.Schema({
 // Models
 const Admin = mongoose.model('Admin', adminSchema);
 const About = mongoose.model('About', aboutSchema);
+const Hero = mongoose.model('Hero', heroSchema);
 const Experience = mongoose.model('Experience', experienceSchema);
 const Testimonial = mongoose.model('Testimonial', testimonialSchema);
 const Gallery = mongoose.model('Gallery', gallerySchema);
@@ -61,6 +73,7 @@ const Contact = mongoose.model('Contact', contactSchema);
 module.exports = {
   Admin,
   About,
+  Hero,
   Experience,
   Testimonial,
   Gallery,

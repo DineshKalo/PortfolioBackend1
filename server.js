@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 // Import routes
 const authRoutes = require('./routes/auth');
 const aboutRoutes = require('./routes/about');
+const heroRoutes = require('./routes/hero');
 const experienceRoutes = require('./routes/experience');
 const testimonialRoutes = require('./routes/testimonial');
 const galleryRoutes = require('./routes/gallery');
@@ -30,17 +31,36 @@ app.use('/api/', limiter);
 // Serve static files from public directory
 app.use(express.static('public'));
 
-// Database connection
+// Database connection with better error handling
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
 })
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.error('MongoDB Connection Error:', err));
+.then(() => {
+  console.log('✓ MongoDB Connected Successfully');
+  console.log('Database:', mongoose.connection.name);
+})
+.catch(err => {
+  console.error('✗ MongoDB Connection Error:', err.message);
+  console.error('Please check your MONGODB_URI in .env file');
+  process.exit(1);
+});
+
+// Handle MongoDB connection events
+mongoose.connection.on('error', err => {
+  console.error('MongoDB error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/about', aboutRoutes);
+app.use('/api/hero', heroRoutes);
 app.use('/api/experience', experienceRoutes);
 app.use('/api/testimonial', testimonialRoutes);
 app.use('/api/gallery', galleryRoutes);

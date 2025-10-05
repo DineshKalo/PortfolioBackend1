@@ -78,6 +78,40 @@
             margin-bottom: 20px;
         }
         
+        .password-input-wrapper {
+            position: relative;
+        }
+        
+        .password-input-wrapper input {
+            padding-right: 45px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            color: #666;
+            font-size: 20px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-toggle:hover {
+            color: #333;
+        }
+        
+        .eye-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+        
         label {
             display: block;
             margin-bottom: 8px;
@@ -90,6 +124,7 @@
         input[type="password"],
         input[type="date"],
         input[type="file"],
+        input[type="number"],
         textarea,
         select {
             width: 100%;
@@ -360,6 +395,29 @@
             color: #5568d3;
         }
         
+        .current-image {
+            max-width: 300px;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .hero-image-preview {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .image-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        
         .empty-state {
             text-align: center;
             padding: 40px;
@@ -438,7 +496,15 @@
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" required>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="loginPassword" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
                 <p style="text-align: center; margin-top: 15px;">
@@ -463,18 +529,34 @@
             </form>
         </div>
 
-        <!-- Reset Password Form (with token) -->
+        <!-- Reset Password Form -->
         <div class="login-container hidden" id="resetContainer">
             <h1>Set New Password</h1>
             <div class="message" id="resetMessage"></div>
             <form id="resetForm">
                 <div class="form-group">
                     <label>New Password</label>
-                    <input type="password" id="resetPassword" required minlength="6">
+                    <div class="password-input-wrapper">
+                        <input type="password" id="resetPassword" required minlength="6">
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('resetPassword', this)">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" id="resetPasswordConfirm" required minlength="6">
+                    <div class="password-input-wrapper">
+                        <input type="password" id="resetPasswordConfirm" required minlength="6">
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('resetPasswordConfirm', this)">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
             </form>
@@ -490,15 +572,58 @@
             <div class="message" id="adminMessage"></div>
 
             <div class="tabs">
-                <button class="tab active" onclick="showTab('about')">About</button>
-                <button class="tab" onclick="showTab('experience')">Experience</button>
-                <button class="tab" onclick="showTab('testimonials')">Testimonials</button>
-                <button class="tab" onclick="showTab('gallery')">Gallery</button>
-                <button class="tab" onclick="showTab('contact')">Contact</button>
+                <button class="tab active" onclick="switchTab('hero', event)">Hero Section</button>
+                <button class="tab" onclick="switchTab('about', event)">About</button>
+                <button class="tab" onclick="switchTab('experience', event)">Experience</button>
+                <button class="tab" onclick="switchTab('testimonials', event)">Testimonials</button>
+                <button class="tab" onclick="switchTab('gallery', event)">Gallery</button>
+                <button class="tab" onclick="switchTab('contact', event)">Contact</button>
+            </div>
+
+            <!-- Hero Tab -->
+            <div class="tab-content active" id="heroTab">
+                <div class="section">
+                    <h2>Hero Section (Landing Page)</h2>
+                    
+                    <h3>Current Hero Section</h3>
+                    <div class="current-content">
+                        <div id="currentHero">
+                            <p><strong>Title:</strong> <span id="currentHeroTitle"></span></p>
+                            <p><strong>Subtitle:</strong> <span id="currentHeroSubtitle"></span></p>
+                            <div id="currentHeroImageContainer"></div>
+                        </div>
+                    </div>
+
+                    <h3>Update Hero Text</h3>
+                    <div class="add-form">
+                        <form id="heroTextForm">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" id="heroTitle" placeholder="e.g., Welcome to My Portfolio">
+                            </div>
+                            <div class="form-group">
+                                <label>Subtitle</label>
+                                <input type="text" id="heroSubtitle" placeholder="e.g., Creative Professional">
+                            </div>
+                            <button type="submit" class="btn btn-success">Update Hero Text</button>
+                        </form>
+                    </div>
+
+                    <h3>Hero Background Image</h3>
+                    <div class="add-form">
+                        <form id="heroImageForm">
+                            <div class="form-group">
+                                <label>Upload Background Image (Max 10MB)</label>
+                                <input type="file" id="heroImage" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-success">Upload Background Image</button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <!-- About Tab -->
-            <div class="tab-content active" id="aboutTab">
+            <div class="tab-content" id="aboutTab">
                 <div class="section">
                     <h2>About Section</h2>
                     
@@ -506,6 +631,7 @@
                     <div class="current-content">
                         <span class="current-label">Current Content:</span>
                         <div id="currentAbout" style="color: #666; white-space: pre-wrap;"></div>
+                        <div id="currentProfileImageContainer"></div>
                     </div>
 
                     <h3>Update About Content</h3>
@@ -516,6 +642,17 @@
                                 <textarea id="aboutContent" placeholder="Enter about section content..."></textarea>
                             </div>
                             <button type="submit" class="btn btn-success">Save About</button>
+                        </form>
+                    </div>
+
+                    <h3>Profile Picture</h3>
+                    <div class="add-form">
+                        <form id="profileImageForm">
+                            <div class="form-group">
+                                <label>Upload Profile Picture (Max 5MB)</label>
+                                <input type="file" id="profileImage" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-success">Upload Profile Picture</button>
                         </form>
                     </div>
                 </div>
@@ -539,7 +676,7 @@
                                 <input type="date" id="expDate">
                             </div>
                             <div class="form-group checkbox-group">
-                                <input type="checkbox" id="expInProgress" onchange="toggleDate()">
+                                <input type="checkbox" id="expInProgress" onchange="toggleDateField()">
                                 <label style="margin: 0;">In Progress</label>
                             </div>
                             <div class="form-group">
@@ -548,7 +685,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-success" id="expSubmitBtn">Add Experience</button>
-                                <button type="button" class="btn btn-secondary hidden" id="cancelExpEdit" onclick="cancelEdit('experience')">Cancel</button>
+                                <button type="button" class="btn btn-secondary hidden" id="cancelExpEdit" onclick="cancelEditExperience()">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -585,7 +722,7 @@
                             </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-success" id="testSubmitBtn">Add Testimonial</button>
-                                <button type="button" class="btn btn-secondary hidden" id="cancelTestEdit" onclick="cancelEdit('testimonial')">Cancel</button>
+                                <button type="button" class="btn btn-secondary hidden" id="cancelTestEdit" onclick="cancelEditTestimonial()">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -661,8 +798,7 @@
         const API_URL = '/api';
         let token = localStorage.getItem('adminToken');
 
-        // Check for reset token in URL
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const resetToken = urlParams.get('token');
             if (resetToken) {
@@ -672,7 +808,6 @@
             }
         });
 
-        // Show/Hide Functions
         function showLogin() {
             document.getElementById('loginContainer').classList.remove('hidden');
             document.getElementById('forgotContainer').classList.add('hidden');
@@ -698,31 +833,48 @@
             loadAllData();
         }
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab').forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(function(content) {
+                content.classList.remove('active');
+            });
             event.target.classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
         }
 
-        function showMessage(elementId, message, isError = false) {
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerHTML = '<svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+            } else {
+                input.type = 'password';
+                button.innerHTML = '<svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            }
+        }
+
+        function showMessage(elementId, message, isError) {
             const el = document.getElementById(elementId);
             el.textContent = message;
             el.className = 'message show ' + (isError ? 'error' : 'success');
-            setTimeout(() => el.classList.remove('show'), 5000);
+            setTimeout(function() {
+                el.classList.remove('show');
+            }, 5000);
         }
 
-        // Auth Functions
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
             try {
-                const res = await fetch(`${API_URL}/auth/login`, {
+                const res = await fetch(API_URL + '/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email: email, password: password })
                 });
                 const data = await res.json();
 
@@ -738,15 +890,15 @@
             }
         });
 
-        document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+        document.getElementById('forgotForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('forgotEmail').value;
 
             try {
-                const res = await fetch(`${API_URL}/auth/forgot-password`, {
+                const res = await fetch(API_URL + '/auth/forgot-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email: email })
                 });
                 const data = await res.json();
                 showMessage('forgotMessage', data.message, !res.ok);
@@ -755,7 +907,7 @@
             }
         });
 
-        document.getElementById('resetForm').addEventListener('submit', async (e) => {
+        document.getElementById('resetForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const password = document.getElementById('resetPassword').value;
             const confirm = document.getElementById('resetPasswordConfirm').value;
@@ -767,7 +919,7 @@
             }
 
             try {
-                const res = await fetch(`${API_URL}/auth/reset-password`, {
+                const res = await fetch(API_URL + '/auth/reset-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token: resetToken, newPassword: password })
@@ -776,7 +928,7 @@
 
                 if (res.ok) {
                     showMessage('resetMessage', data.message + ' Redirecting to login...', false);
-                    setTimeout(() => {
+                    setTimeout(function() {
                         window.location.href = '/';
                     }, 2000);
                 } else {
@@ -793,15 +945,14 @@
             window.location.reload();
         }
 
-        // API Helper
-        async function apiCall(endpoint, method = 'GET', body = null, isFormData = false) {
-            const headers = { 'Authorization': `Bearer ${token}` };
+        async function apiCall(endpoint, method, body, isFormData) {
+            const headers = { 'Authorization': 'Bearer ' + token };
             if (!isFormData) headers['Content-Type'] = 'application/json';
 
-            const options = { method, headers };
+            const options = { method: method, headers: headers };
             if (body) options.body = isFormData ? body : JSON.stringify(body);
 
-            const res = await fetch(`${API_URL}${endpoint}`, options);
+            const res = await fetch(API_URL + endpoint, options);
             if (res.status === 401) {
                 logout();
                 return;
@@ -809,8 +960,8 @@
             return res.json();
         }
 
-        // Load All Data
         async function loadAllData() {
+            loadHero();
             loadAbout();
             loadExperiences();
             loadTestimonials();
@@ -818,25 +969,131 @@
             loadContact();
         }
 
-        // About Functions
+        async function loadHero() {
+            const data = await fetch(API_URL + '/hero').then(function(r) { return r.json(); });
+            
+            document.getElementById('currentHeroTitle').textContent = data.title || 'Not set';
+            document.getElementById('currentHeroSubtitle').textContent = data.subtitle || 'Not set';
+            document.getElementById('heroTitle').value = data.title || '';
+            document.getElementById('heroSubtitle').value = data.subtitle || '';
+            
+            const imageContainer = document.getElementById('currentHeroImageContainer');
+            if (data.backgroundImageUrl) {
+                imageContainer.innerHTML = '<div style="margin-top: 15px;"><span class="current-label">Current Background:</span><img src="' + data.backgroundImageUrl + '" class="hero-image-preview" alt="Hero Background"><div class="image-actions"><button class="btn btn-danger btn-small" onclick="deleteHeroImage()">Delete Background Image</button></div></div>';
+            } else {
+                imageContainer.innerHTML = '<p style="margin-top: 10px; color: #999;">No background image set</p>';
+            }
+        }
+
+        document.getElementById('heroTextForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const hero = {
+                title: document.getElementById('heroTitle').value,
+                subtitle: document.getElementById('heroSubtitle').value
+            };
+            const data = await apiCall('/hero', 'PUT', hero);
+            showMessage('adminMessage', data.message);
+            loadHero();
+        });
+
+        document.getElementById('heroImageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('heroImage');
+            
+            if (!fileInput.files[0]) {
+                showMessage('adminMessage', 'Please select an image', true);
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Uploading...';
+            submitBtn.disabled = true;
+
+            try {
+                const data = await apiCall('/hero/background-image', 'POST', formData, true);
+                showMessage('adminMessage', data.message);
+                e.target.reset();
+                loadHero();
+            } catch (error) {
+                showMessage('adminMessage', 'Upload failed', true);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function deleteHeroImage() {
+            if (!confirm('Are you sure you want to delete the hero background image?')) return;
+            const data = await apiCall('/hero/background-image', 'DELETE');
+            showMessage('adminMessage', data.message);
+            loadHero();
+        }
+
         async function loadAbout() {
-            const data = await fetch(`${API_URL}/about`).then(r => r.json());
+            const data = await fetch(API_URL + '/about').then(function(r) { return r.json(); });
             const content = data.content || 'No content yet';
             document.getElementById('currentAbout').textContent = content;
             document.getElementById('aboutContent').value = data.content || '';
+            
+            const imageContainer = document.getElementById('currentProfileImageContainer');
+            if (data.profileImageUrl) {
+                imageContainer.innerHTML = '<div style="margin-top: 15px;"><span class="current-label">Current Profile Picture:</span><br><img src="' + data.profileImageUrl + '" class="current-image" alt="Profile Picture"><div class="image-actions"><button class="btn btn-danger btn-small" onclick="deleteProfileImage()">Delete Profile Picture</button></div></div>';
+            } else {
+                imageContainer.innerHTML = '<p style="margin-top: 10px; color: #999;">No profile picture set</p>';
+            }
         }
 
-        document.getElementById('aboutForm').addEventListener('submit', async (e) => {
+        document.getElementById('aboutForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const content = document.getElementById('aboutContent').value;
-            const data = await apiCall('/about', 'PUT', { content });
+            const data = await apiCall('/about', 'PUT', { content: content });
             showMessage('adminMessage', data.message);
             loadAbout();
         });
 
-        // Experience Functions
+        document.getElementById('profileImageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('profileImage');
+            
+            if (!fileInput.files[0]) {
+                showMessage('adminMessage', 'Please select an image', true);
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Uploading...';
+            submitBtn.disabled = true;
+
+            try {
+                const data = await apiCall('/about/profile-image', 'POST', formData, true);
+                showMessage('adminMessage', data.message);
+                e.target.reset();
+                loadAbout();
+            } catch (error) {
+                showMessage('adminMessage', 'Upload failed', true);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function deleteProfileImage() {
+            if (!confirm('Are you sure you want to delete the profile picture?')) return;
+            const data = await apiCall('/about/profile-image', 'DELETE');
+            showMessage('adminMessage', data.message);
+            loadAbout();
+        }
+
         async function loadExperiences() {
-            const data = await fetch(`${API_URL}/experience`).then(r => r.json());
+            const data = await fetch(API_URL + '/experience').then(function(r) { return r.json(); });
             const list = document.getElementById('experienceList');
             document.getElementById('expCount').textContent = data.length;
             
@@ -845,30 +1102,19 @@
                 return;
             }
             
-            list.innerHTML = data.map(exp => `
-                <div class="item">
-                    <div class="item-content">
-                        <strong>${exp.name}</strong>
-                        ${exp.inProgress ? '<span class="badge badge-warning">In Progress</span>' : ''}
-                        <small>${exp.inProgress ? 'In Progress' : (exp.date || 'No date specified')}</small>
-                        <div class="item-meta">Order: ${exp.order} | Added: ${new Date(exp.createdAt).toLocaleDateString()}</div>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn btn-primary btn-small" onclick='editExperience(${JSON.stringify(exp).replace(/'/g, "&apos;")})'>Edit</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteExperience('${exp._id}')">Delete</button>
-                    </div>
-                </div>
-            `).join('');
+            list.innerHTML = data.map(function(exp) {
+                return '<div class="item"><div class="item-content"><strong>' + exp.name + '</strong>' + (exp.inProgress ? '<span class="badge badge-warning">In Progress</span>' : '') + '<small>' + (exp.inProgress ? 'In Progress' : (exp.date || 'No date specified')) + '</small><div class="item-meta">Order: ' + exp.order + ' | Added: ' + new Date(exp.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editExperience(' + JSON.stringify(exp) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteExperience(\'' + exp._id + '\')">Delete</button></div></div>';
+            }).join('');
         }
 
-        function toggleDate() {
+        function toggleDateField() {
             const checkbox = document.getElementById('expInProgress');
             const dateInput = document.getElementById('expDate');
             dateInput.disabled = checkbox.checked;
             if (checkbox.checked) dateInput.value = '';
         }
 
-        document.getElementById('experienceForm').addEventListener('submit', async (e) => {
+        document.getElementById('experienceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const id = document.getElementById('expId').value;
             const exp = {
@@ -878,9 +1124,7 @@
                 order: parseInt(document.getElementById('expOrder').value)
             };
 
-            const data = id 
-                ? await apiCall(`/experience/${id}`, 'PUT', exp)
-                : await apiCall('/experience', 'POST', exp);
+            const data = id ? await apiCall('/experience/' + id, 'PUT', exp) : await apiCall('/experience', 'POST', exp);
 
             showMessage('adminMessage', data.message);
             e.target.reset();
@@ -898,35 +1142,26 @@
             document.getElementById('expOrder').value = exp.order;
             document.getElementById('expSubmitBtn').textContent = 'Update Experience';
             document.getElementById('cancelExpEdit').classList.remove('hidden');
-            toggleDate();
-            // Scroll to form
+            toggleDateField();
             document.getElementById('experienceForm').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function deleteExperience(id) {
             if (!confirm('Are you sure you want to delete this experience?')) return;
-            const data = await apiCall(`/experience/${id}`, 'DELETE');
+            const data = await apiCall('/experience/' + id, 'DELETE');
             showMessage('adminMessage', data.message);
             loadExperiences();
         }
 
-        function cancelEdit(type) {
-            if (type === 'experience') {
-                document.getElementById('experienceForm').reset();
-                document.getElementById('expId').value = '';
-                document.getElementById('expSubmitBtn').textContent = 'Add Experience';
-                document.getElementById('cancelExpEdit').classList.add('hidden');
-            } else {
-                document.getElementById('testimonialForm').reset();
-                document.getElementById('testId').value = '';
-                document.getElementById('testSubmitBtn').textContent = 'Add Testimonial';
-                document.getElementById('cancelTestEdit').classList.add('hidden');
-            }
+        function cancelEditExperience() {
+            document.getElementById('experienceForm').reset();
+            document.getElementById('expId').value = '';
+            document.getElementById('expSubmitBtn').textContent = 'Add Experience';
+            document.getElementById('cancelExpEdit').classList.add('hidden');
         }
 
-        // Testimonial Functions
         async function loadTestimonials() {
-            const data = await fetch(`${API_URL}/testimonial`).then(r => r.json());
+            const data = await fetch(API_URL + '/testimonial').then(function(r) { return r.json(); });
             const list = document.getElementById('testimonialList');
             document.getElementById('testCount').textContent = data.length;
             
@@ -935,23 +1170,12 @@
                 return;
             }
             
-            list.innerHTML = data.map(test => `
-                <div class="item">
-                    <div class="item-content">
-                        <strong>${test.name}</strong>
-                        ${test.activityPackage ? `<span class="badge badge-success">${test.activityPackage}</span>` : ''}
-                        <small>"${test.comment}"</small>
-                        <div class="item-meta">Order: ${test.order} | Added: ${new Date(test.createdAt).toLocaleDateString()}</div>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn btn-primary btn-small" onclick='editTestimonial(${JSON.stringify(test).replace(/'/g, "&apos;")})'>Edit</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteTestimonial('${test._id}')">Delete</button>
-                    </div>
-                </div>
-            `).join('');
+            list.innerHTML = data.map(function(test) {
+                return '<div class="item"><div class="item-content"><strong>' + test.name + '</strong>' + (test.activityPackage ? '<span class="badge badge-success">' + test.activityPackage + '</span>' : '') + '<small>"' + test.comment + '"</small><div class="item-meta">Order: ' + test.order + ' | Added: ' + new Date(test.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editTestimonial(' + JSON.stringify(test) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteTestimonial(\'' + test._id + '\')">Delete</button></div></div>';
+            }).join('');
         }
 
-        document.getElementById('testimonialForm').addEventListener('submit', async (e) => {
+        document.getElementById('testimonialForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const id = document.getElementById('testId').value;
             const test = {
@@ -961,9 +1185,7 @@
                 order: parseInt(document.getElementById('testOrder').value)
             };
 
-            const data = id 
-                ? await apiCall(`/testimonial/${id}`, 'PUT', test)
-                : await apiCall('/testimonial', 'POST', test);
+            const data = id ? await apiCall('/testimonial/' + id, 'PUT', test) : await apiCall('/testimonial', 'POST', test);
 
             showMessage('adminMessage', data.message);
             e.target.reset();
@@ -981,20 +1203,25 @@
             document.getElementById('testOrder').value = test.order;
             document.getElementById('testSubmitBtn').textContent = 'Update Testimonial';
             document.getElementById('cancelTestEdit').classList.remove('hidden');
-            // Scroll to form
             document.getElementById('testimonialForm').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function deleteTestimonial(id) {
             if (!confirm('Are you sure you want to delete this testimonial?')) return;
-            const data = await apiCall(`/testimonial/${id}`, 'DELETE');
+            const data = await apiCall('/testimonial/' + id, 'DELETE');
             showMessage('adminMessage', data.message);
             loadTestimonials();
         }
 
-        // Gallery Functions
+        function cancelEditTestimonial() {
+            document.getElementById('testimonialForm').reset();
+            document.getElementById('testId').value = '';
+            document.getElementById('testSubmitBtn').textContent = 'Add Testimonial';
+            document.getElementById('cancelTestEdit').classList.add('hidden');
+        }
+
         async function loadGallery() {
-            const data = await fetch(`${API_URL}/gallery`).then(r => r.json());
+            const data = await fetch(API_URL + '/gallery').then(function(r) { return r.json(); });
             const grid = document.getElementById('galleryGrid');
             document.getElementById('galleryCount').textContent = data.length;
             
@@ -1003,21 +1230,12 @@
                 return;
             }
             
-            grid.innerHTML = data.map(img => `
-                <div class="gallery-item">
-                    <img src="${img.imageUrl}" alt="${img.caption || 'Gallery image'}">
-                    <div class="gallery-item-info">
-                        <div class="gallery-item-caption">${img.caption || 'No caption'}</div>
-                        <div class="gallery-item-order">Order: ${img.order} | ${new Date(img.createdAt).toLocaleDateString()}</div>
-                    </div>
-                    <div class="gallery-item-actions">
-                        <button class="btn btn-danger btn-small" onclick="deleteImage('${img._id}')" title="Delete image">×</button>
-                    </div>
-                </div>
-            `).join('');
+            grid.innerHTML = data.map(function(img) {
+                return '<div class="gallery-item"><img src="' + img.imageUrl + '" alt="' + (img.caption || 'Gallery image') + '"><div class="gallery-item-info"><div class="gallery-item-caption">' + (img.caption || 'No caption') + '</div><div class="gallery-item-order">Order: ' + img.order + ' | ' + new Date(img.createdAt).toLocaleDateString() + '</div></div><div class="gallery-item-actions"><button class="btn btn-danger btn-small" onclick="deleteImage(\'' + img._id + '\')" title="Delete image">×</button></div></div>';
+            }).join('');
         }
 
-        document.getElementById('galleryForm').addEventListener('submit', async (e) => {
+        document.getElementById('galleryForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const fileInput = document.getElementById('galleryImage');
             
@@ -1031,7 +1249,6 @@
             formData.append('caption', document.getElementById('galleryCaption').value);
             formData.append('order', document.getElementById('galleryOrder').value);
 
-            // Show uploading message
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = 'Uploading...';
@@ -1052,34 +1269,27 @@
 
         async function deleteImage(id) {
             if (!confirm('Are you sure you want to delete this image? This will also remove it from Cloudinary.')) return;
-            const data = await apiCall(`/gallery/${id}`, 'DELETE');
+            const data = await apiCall('/gallery/' + id, 'DELETE');
             showMessage('adminMessage', data.message);
             loadGallery();
         }
 
-        // Contact Functions
         async function loadContact() {
-            const data = await fetch(`${API_URL}/contact`).then(r => r.json());
+            const data = await fetch(API_URL + '/contact').then(function(r) { return r.json(); });
             
-            // Display current contact
             const currentContact = document.getElementById('currentContact');
             if (!data.name && !data.email && !data.instagramHandle) {
                 currentContact.innerHTML = '<p style="color: #999;">No contact information set yet.</p>';
             } else {
-                currentContact.innerHTML = `
-                    <p><strong>Name:</strong> ${data.name || 'Not set'}</p>
-                    <p><strong>Email:</strong> ${data.email || 'Not set'}</p>
-                    <p><strong>Instagram:</strong> ${data.instagramHandle || 'Not set'}</p>
-                `;
+                currentContact.innerHTML = '<p><strong>Name:</strong> ' + (data.name || 'Not set') + '</p><p><strong>Email:</strong> ' + (data.email || 'Not set') + '</p><p><strong>Instagram:</strong> ' + (data.instagramHandle || 'Not set') + '</p>';
             }
             
-            // Fill form
             document.getElementById('contactName').value = data.name || '';
             document.getElementById('contactEmail').value = data.email || '';
             document.getElementById('contactInsta').value = data.instagramHandle || '';
         }
 
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const contact = {
                 name: document.getElementById('contactName').value,
