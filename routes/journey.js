@@ -3,9 +3,6 @@ const router = express.Router();
 const { Journey } = require('../models');
 const authMiddleware = require('../middleware/auth');
 const { translateToArabic } =require('../utils/translator');
-const { Journey } = require('../models');
-const authMiddleware = require('../middleware/auth');
-const { translateToArabic } = require('../utils/translator');
 
 // Get all journey items (public)
 router.get('/', async (req, res) => {
