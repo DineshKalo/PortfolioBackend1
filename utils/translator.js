@@ -1,4 +1,4 @@
-const { translate } = require('@vitalets/google-translate-api');
+const translate = require('google-translate-api-x');
 
 /**
  * Translate text from English to Arabic
@@ -11,6 +11,7 @@ async function translateToArabic(text) {
       return '';
     }
     
+    // Try to translate
     const result = await translate(text, { from: 'en', to: 'ar' });
     return result.text;
   } catch (error) {

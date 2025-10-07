@@ -11,7 +11,10 @@ const adminSchema = new mongoose.Schema({
 
 // About Section Schema (with profile picture)
 const aboutSchema = new mongoose.Schema({
-  content: { type: String, required: true },
+  content: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
   profileImageUrl: { type: String },
   profileImageCloudinaryId: { type: String },
   updatedAt: { type: Date, default: Date.now }
@@ -19,8 +22,14 @@ const aboutSchema = new mongoose.Schema({
 
 // Hero Section Schema (background image)
 const heroSchema = new mongoose.Schema({
-  title: { type: String },
-  subtitle: { type: String },
+  title: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
+  subtitle: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
   backgroundImageUrl: { type: String },
   backgroundImageCloudinaryId: { type: String },
   updatedAt: { type: Date, default: Date.now }
@@ -28,7 +37,10 @@ const heroSchema = new mongoose.Schema({
 
 // Experience & Certification Schema
 const experienceSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
   date: { type: String },
   inProgress: { type: Boolean, default: false },
   order: { type: Number, default: 0 },
@@ -38,8 +50,14 @@ const experienceSchema = new mongoose.Schema({
 // Client Testimonial Schema
 const testimonialSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  comment: { type: String, required: true },
-  activityPackage: { type: String },
+  comment: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
+  activityPackage: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
   order: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
@@ -56,8 +74,14 @@ const gallerySchema = new mongoose.Schema({
 // Journey/Timeline Schema
 const journeySchema = new mongoose.Schema({
   age: { type: String, required: true },
-  title: { type: String, required: true },
-  body: { type: String, required: true },
+  title: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
+  body: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
+  },
   order: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
