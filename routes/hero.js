@@ -4,6 +4,7 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { Hero } = require('../models');
 const authMiddleware = require('../middleware/auth');
+const { translateToArabic } = require('../utils/translator');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -31,9 +32,17 @@ router.get('/', async (req, res) => {
   try {
     let hero = await Hero.findOne();
     if (!hero) {
+      const defaultTitle = 'Welcome to My Portfolio';
+      const defaultSubtitle = 'Creative Professional';
       hero = await Hero.create({ 
-        title: 'Welcome to My Portfolio',
-        subtitle: 'Creative Professional'
+        title: {
+          en: defaultTitle,
+          ar: await translateToArabic(defaultTitle)
+        },
+        subtitle: {
+          en: defaultSubtitle,
+          ar: await translateToArabic(defaultSubtitle)
+        }
       });
     }
     res.json(hero);
@@ -42,22 +51,36 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Update hero text (protected)
+// Update hero text (protected) - Auto-translates to Arabic
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { title, subtitle } = req.body;
+    const { title, subtitle } = req.body; // English content from user
     let hero = await Hero.findOne();
     
+    const updates = {};
+    if (title !== undefined) {
+      updates.title = {
+        en: title,
+        ar: await translateToArabic(title)
+      };
+    }
+    if (subtitle !== undefined) {
+      updates.subtitle = {
+        en: subtitle,
+        ar: await translateToArabic(subtitle)
+      };
+    }
+    
     if (!hero) {
-      hero = await Hero.create({ title, subtitle });
+      hero = await Hero.create(updates);
     } else {
-      if (title !== undefined) hero.title = title;
-      if (subtitle !== undefined) hero.subtitle = subtitle;
+      if (updates.title) hero.title = updates.title;
+      if (updates.subtitle) hero.subtitle = updates.subtitle;
       hero.updatedAt = Date.now();
       await hero.save();
     }
     
-    res.json({ message: 'Hero section updated', hero });
+    res.json({ message: 'Hero section updated (English & Arabic)', hero });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -92,9 +115,17 @@ router.post('/background-image', authMiddleware, upload.single('image'), async (
     const result = await uploadPromise;
 
     if (!hero) {
+      const defaultTitle = 'Welcome to My Portfolio';
+      const defaultSubtitle = 'Creative Professional';
       hero = await Hero.create({
-        title: 'Welcome to My Portfolio',
-        subtitle: 'Creative Professional',
+        title: {
+          en: defaultTitle,
+          ar: await translateToArabic(defaultTitle)
+        },
+        subtitle: {
+          en: defaultSubtitle,
+          ar: await translateToArabic(defaultSubtitle)
+        },
         backgroundImageUrl: result.secure_url,
         backgroundImageCloudinaryId: result.public_id
       });

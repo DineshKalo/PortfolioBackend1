@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { Journey } = require('../models');
 const authMiddleware = require('../middleware/auth');
+const { translateToArabic } =require('../utils/translator');
+const { Journey } = require('../models');
+const authMiddleware = require('../middleware/auth');
+const { translateToArabic } = require('../utils/translator');
 
 // Get all journey items (public)
 router.get('/', async (req, res) => {
@@ -13,29 +17,60 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create journey item (protected)
+// Create journey item (protected) - Auto-translates to Arabic
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { age, title, body, order } = req.body;
+    
+    // Translate title and body to Arabic
+    const titleAr = await translateToArabic(title);
+    const bodyAr = await translateToArabic(body);
+    
     const journey = await Journey.create({
       age,
-      title,
-      body,
+      title: {
+        en: title,
+        ar: titleAr
+      },
+      body: {
+        en: body,
+        ar: bodyAr
+      },
       order: order || 0
     });
-    res.status(201).json({ message: 'Journey item created', journey });
+    
+    res.status(201).json({ message: 'Journey item created (English & Arabic)', journey });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
-// Update journey item (protected)
+// Update journey item (protected) - Auto-translates to Arabic
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { age, title, body, order } = req.body;
+    
+    const updates = {};
+    if (age !== undefined) updates.age = age;
+    if (order !== undefined) updates.order = order;
+    
+    if (title !== undefined) {
+      updates.title = {
+        en: title,
+        ar: await translateToArabic(title)
+      };
+    }
+    
+    if (body !== undefined) {
+      updates.body = {
+        en: body,
+        ar: await translateToArabic(body)
+      };
+    }
+    
     const journey = await Journey.findByIdAndUpdate(
       req.params.id,
-      { age, title, body, order },
+      updates,
       { new: true }
     );
     
@@ -43,7 +78,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Journey item not found' });
     }
     
-    res.json({ message: 'Journey item updated', journey });
+    res.json({ message: 'Journey item updated (English & Arabic)', journey });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

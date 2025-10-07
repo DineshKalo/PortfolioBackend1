@@ -4,6 +4,7 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { About } = require('../models');
 const authMiddleware = require('../middleware/auth');
+const { translateToArabic } = require('../utils/translator');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -31,7 +32,14 @@ router.get('/', async (req, res) => {
   try {
     let about = await About.findOne();
     if (!about) {
-      about = await About.create({ content: 'Welcome to our portfolio!' });
+      const defaultContent = 'Welcome to our portfolio!';
+      const arabicContent = await translateToArabic(defaultContent);
+      about = await About.create({ 
+        content: {
+          en: defaultContent,
+          ar: arabicContent
+        }
+      });
     }
     res.json(about);
   } catch (error) {
@@ -39,21 +47,33 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Update about content (protected)
+// Update about content (protected) - Auto-translates to Arabic
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { content } = req.body;
+    const { content } = req.body; // English content from user
+    
+    // Translate to Arabic
+    const arabicContent = await translateToArabic(content);
+    
     let about = await About.findOne();
     
     if (!about) {
-      about = await About.create({ content });
+      about = await About.create({ 
+        content: {
+          en: content,
+          ar: arabicContent
+        }
+      });
     } else {
-      about.content = content;
+      about.content = {
+        en: content,
+        ar: arabicContent
+      };
       about.updatedAt = Date.now();
       await about.save();
     }
     
-    res.json({ message: 'About section updated', about });
+    res.json({ message: 'About section updated (English & Arabic)', about });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -88,8 +108,13 @@ router.post('/profile-image', authMiddleware, upload.single('image'), async (req
     const result = await uploadPromise;
 
     if (!about) {
+      const defaultContent = 'Welcome to our portfolio!';
+      const arabicContent = await translateToArabic(defaultContent);
       about = await About.create({
-        content: 'Welcome to our portfolio!',
+        content: {
+          en: defaultContent,
+          ar: arabicContent
+        },
         profileImageUrl: result.secure_url,
         profileImageCloudinaryId: result.public_id
       });
