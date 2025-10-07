@@ -1026,13 +1026,12 @@
         async function loadHero() {
             const data = await fetch(API_URL + '/hero').then(function(r) { return r.json(); });
             
+            // Display only English content
             const titleEn = (data.title && data.title.en) ? data.title.en : 'Not set';
-            const titleAr = (data.title && data.title.ar) ? data.title.ar : '';
             const subtitleEn = (data.subtitle && data.subtitle.en) ? data.subtitle.en : 'Not set';
-            const subtitleAr = (data.subtitle && data.subtitle.ar) ? data.subtitle.ar : '';
             
-            document.getElementById('currentHeroTitle').innerHTML = '<span>EN: ' + titleEn + '</span>' + (titleAr ? '<br><span style="color: #999;">AR: ' + titleAr + '</span>' : '');
-            document.getElementById('currentHeroSubtitle').innerHTML = '<span>EN: ' + subtitleEn + '</span>' + (subtitleAr ? '<br><span style="color: #999;">AR: ' + subtitleAr + '</span>' : '');
+            document.getElementById('currentHeroTitle').innerHTML = '<span>EN: ' + titleEn + '</span>';
+            document.getElementById('currentHeroSubtitle').innerHTML = '<span>EN: ' + subtitleEn + '</span>';
             document.getElementById('heroTitle').value = titleEn;
             document.getElementById('heroSubtitle').value = subtitleEn;
             
@@ -1094,10 +1093,11 @@
 
         async function loadAbout() {
             const data = await fetch(API_URL + '/about').then(function(r) { return r.json(); });
-            const contentEn = (data.content && data.content.en) ? data.content.en : 'No content yet';
-            const contentAr = (data.content && data.content.ar) ? data.content.ar : '';
             
-            document.getElementById('currentAbout').innerHTML = '<p><strong>English:</strong> ' + contentEn + '</p>' + (contentAr ? '<p><strong>Arabic:</strong> ' + contentAr + '</p>' : '');
+            // Display only English content
+            const contentEn = (data.content && data.content.en) ? data.content.en : 'No content yet';
+            
+            document.getElementById('currentAbout').innerHTML = '<p><strong>English:</strong> ' + contentEn + '</p>';
             document.getElementById('aboutContent').value = contentEn;
             
             const imageContainer = document.getElementById('currentProfileImageContainer');
@@ -1164,7 +1164,11 @@
             }
             
             list.innerHTML = data.map(function(item) {
-                return '<div class="item"><div class="item-content"><strong>' + item.title + '</strong><span class="badge badge-success">' + item.age + '</span><small>' + item.body.substring(0, 150) + (item.body.length > 150 ? '...' : '') + '</small><div class="item-meta">Order: ' + item.order + ' | Added: ' + new Date(item.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editJourney(' + JSON.stringify(item) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteJourney(\'' + item._id + '\')">Delete</button></div></div>';
+                // Display only English content
+                const title = (item.title && item.title.en) ? item.title.en : item.title;
+                const body = (item.body && item.body.en) ? item.body.en : item.body;
+                
+                return '<div class="item"><div class="item-content"><strong>' + title + '</strong><span class="badge badge-success">' + item.age + '</span><small>' + body.substring(0, 150) + (body.length > 150 ? '...' : '') + '</small><div class="item-meta">Order: ' + item.order + ' | Added: ' + new Date(item.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editJourney(' + JSON.stringify(item) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteJourney(\'' + item._id + '\')">Delete</button></div></div>';
             }).join('');
         }
 
@@ -1191,8 +1195,11 @@
         function editJourney(item) {
             document.getElementById('journeyId').value = item._id;
             document.getElementById('journeyAge').value = item.age;
-            document.getElementById('journeyTitle').value = item.title;
-            document.getElementById('journeyBody').value = item.body;
+            // Extract English content for editing
+            const title = (item.title && item.title.en) ? item.title.en : item.title;
+            const body = (item.body && item.body.en) ? item.body.en : item.body;
+            document.getElementById('journeyTitle').value = title;
+            document.getElementById('journeyBody').value = body;
             document.getElementById('journeyOrder').value = item.order;
             document.getElementById('journeySubmitBtn').textContent = 'Update Journey Item';
             document.getElementById('cancelJourneyEdit').classList.remove('hidden');
@@ -1224,7 +1231,10 @@
             }
             
             list.innerHTML = data.map(function(exp) {
-                return '<div class="item"><div class="item-content"><strong>' + exp.name + '</strong>' + (exp.inProgress ? '<span class="badge badge-warning">In Progress</span>' : '') + '<small>' + (exp.inProgress ? 'In Progress' : (exp.date || 'No date specified')) + '</small><div class="item-meta">Order: ' + exp.order + ' | Added: ' + new Date(exp.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editExperience(' + JSON.stringify(exp) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteExperience(\'' + exp._id + '\')">Delete</button></div></div>';
+                // Display only English content
+                const name = (exp.name && exp.name.en) ? exp.name.en : exp.name;
+                
+                return '<div class="item"><div class="item-content"><strong>' + name + '</strong>' + (exp.inProgress ? '<span class="badge badge-warning">In Progress</span>' : '') + '<small>' + (exp.inProgress ? 'In Progress' : (exp.date || 'No date specified')) + '</small><div class="item-meta">Order: ' + exp.order + ' | Added: ' + new Date(exp.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editExperience(' + JSON.stringify(exp) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteExperience(\'' + exp._id + '\')">Delete</button></div></div>';
             }).join('');
         }
 
@@ -1257,7 +1267,9 @@
 
         function editExperience(exp) {
             document.getElementById('expId').value = exp._id;
-            document.getElementById('expName').value = exp.name;
+            // Extract English content for editing
+            const name = (exp.name && exp.name.en) ? exp.name.en : exp.name;
+            document.getElementById('expName').value = name;
             document.getElementById('expDate').value = exp.date || '';
             document.getElementById('expInProgress').checked = exp.inProgress;
             document.getElementById('expOrder').value = exp.order;
@@ -1292,7 +1304,11 @@
             }
             
             list.innerHTML = data.map(function(test) {
-                return '<div class="item"><div class="item-content"><strong>' + test.name + '</strong>' + (test.activityPackage ? '<span class="badge badge-success">' + test.activityPackage + '</span>' : '') + '<small>"' + test.comment + '"</small><div class="item-meta">Order: ' + test.order + ' | Added: ' + new Date(test.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editTestimonial(' + JSON.stringify(test) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteTestimonial(\'' + test._id + '\')">Delete</button></div></div>';
+                // Display only English content
+                const comment = (test.comment && test.comment.en) ? test.comment.en : test.comment;
+                const activityPackage = (test.activityPackage && test.activityPackage.en) ? test.activityPackage.en : test.activityPackage;
+                
+                return '<div class="item"><div class="item-content"><strong>' + test.name + '</strong>' + (activityPackage ? '<span class="badge badge-success">' + activityPackage + '</span>' : '') + '<small>"' + comment + '"</small><div class="item-meta">Order: ' + test.order + ' | Added: ' + new Date(test.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editTestimonial(' + JSON.stringify(test) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteTestimonial(\'' + test._id + '\')">Delete</button></div></div>';
             }).join('');
         }
 
@@ -1319,8 +1335,11 @@
         function editTestimonial(test) {
             document.getElementById('testId').value = test._id;
             document.getElementById('testName').value = test.name;
-            document.getElementById('testComment').value = test.comment;
-            document.getElementById('testPackage').value = test.activityPackage || '';
+            // Extract English content for editing
+            const comment = (test.comment && test.comment.en) ? test.comment.en : test.comment;
+            const activityPackage = (test.activityPackage && test.activityPackage.en) ? test.activityPackage.en : test.activityPackage;
+            document.getElementById('testComment').value = comment;
+            document.getElementById('testPackage').value = activityPackage || '';
             document.getElementById('testOrder').value = test.order;
             document.getElementById('testSubmitBtn').textContent = 'Update Testimonial';
             document.getElementById('cancelTestEdit').classList.remove('hidden');
