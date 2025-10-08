@@ -50,30 +50,19 @@ router.get('/', async (req, res) => {
 // Update about content (protected) - Auto-translates to Arabic
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { content } = req.body; // English content from user
-    
-    // Translate to Arabic
-    const arabicContent = await translateToArabic(content);
+    const { content } = req.body; // Expects { en: "...", ar: "..." }
     
     let about = await About.findOne();
     
     if (!about) {
-      about = await About.create({ 
-        content: {
-          en: content,
-          ar: arabicContent
-        }
-      });
+      about = await About.create({ content });
     } else {
-      about.content = {
-        en: content,
-        ar: arabicContent
-      };
+      about.content = content;
       about.updatedAt = Date.now();
       await about.save();
     }
     
-    res.json({ message: 'About section updated (English & Arabic)', about });
+    res.json({ message: 'About section updated', about });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

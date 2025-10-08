@@ -456,6 +456,39 @@
             gap: 10px;
             margin-top: 20px;
         }
+
+        .bilingual-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .language-panel {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .language-panel h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .translate-btn {
+            background: #17a2b8;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .translate-btn:hover {
+            background: #138496;
+        }
+
+        @media (max-width: 768px) {
+            .bilingual-container {
+                grid-template-columns: 1fr;
+            }
+        }
         
         @media (max-width: 768px) {
             .header {
@@ -481,6 +514,96 @@
                 width: 100%;
             }
         }
+
+        @media (max-width: 768px) {
+    .about-side-by-side {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+.journey-item-bilingual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.journey-item-lang {
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.journey-item-lang strong {
+    display: block;
+    color: #667eea;
+    margin-bottom: 5px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    .journey-item-bilingual {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Dual Language Inputs */
+.dual-language-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.language-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.language-input-group input[dir="rtl"] {
+    text-align: right;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Dual Language Display */
+.dual-language-display {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.language-column h4 {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e0e0e0;
+    color: #333;
+    text-align: center;
+}
+
+.language-column:last-child h4 {
+    border-bottom-color: #2196f3;
+}
+
+.language-column:last-child .item {
+    text-align: right;
+    direction: rtl;
+}
+
+.language-column:last-child .item-content {
+    text-align: right;
+}
+
+.language-column:last-child .item-meta {
+    text-align: left;
+    direction: ltr;
+}
+
+.language-column:last-child .badge {
+    direction: ltr;
+}
     </style>
 </head>
 <body>
@@ -601,14 +724,40 @@
                             ℹ️ <strong>Auto-Translation:</strong> Enter text in English. Arabic translation will be generated automatically.
                         </div>
                         <form id="heroTextForm">
-                            <div class="form-group">
-                                <label>Title (English)</label>
-                                <input type="text" id="heroTitle" placeholder="e.g., Welcome to My Portfolio">
+                            <div class="info-box">
+                                ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic.
                             </div>
-                            <div class="form-group">
-                                <label>Subtitle (English)</label>
-                                <input type="text" id="heroSubtitle" placeholder="e.g., Creative Professional">
+                            
+                            <!-- Language Tabs
+                            <div class="language-tabs">
+                                <button type="button" class="lang-tab active" onclick="switchLangTab('hero', 'en', event)">English</button>
+                                <button type="button" class="lang-tab" onclick="switchLangTab('hero', 'ar', event)">Arabic</button>
+                            </div> -->
+                            
+                            <!-- English Content -->
+                            <div class="lang-content active" id="heroLangEn">
+                                <div class="form-group">
+                                    <label>Title (English)</label>
+                                    <input type="text" id="heroTitleEn" placeholder="Welcome to My Portfolio">
+                                </div>
+                                <div class="form-group">
+                                    <label>Subtitle (English)</label>
+                                    <input type="text" id="heroSubtitleEn" placeholder="Creative Professional">
+                                </div>
                             </div>
+                            
+                            <!-- Arabic Content -->
+                            <div class="lang-content" id="heroLangAr">
+                                <div class="form-group">
+                                    <label>Title (Arabic)</label>
+                                    <input type="text" id="heroTitleAr" placeholder="مرحبا بكم في محفظتي" dir="rtl">
+                                </div>
+                                <div class="form-group">
+                                    <label>Subtitle (Arabic)</label>
+                                    <input type="text" id="heroSubtitleAr" placeholder="محترف مبدع" dir="rtl">
+                                </div>
+                            </div>
+                            
                             <button type="submit" class="btn btn-success">Update Hero Text</button>
                         </form>
                     </div>
@@ -633,21 +782,39 @@
                     
                     <h3>Current About Content</h3>
                     <div class="current-content">
-                        <span class="current-label">Current Content:</span>
-                        <div id="currentAbout" style="color: #666; white-space: pre-wrap;"></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <span class="current-label">English:</span>
+                                <div id="currentAboutEn" style="color: #666; white-space: pre-wrap;"></div>
+                            </div>
+                            <div>
+                                <span class="current-label">Arabic:</span>
+                                <div id="currentAboutAr" style="color: #666; white-space: pre-wrap;" dir="rtl"></div>
+                            </div>
+                        </div>
                         <div id="currentProfileImageContainer"></div>
                     </div>
 
                     <h3>Update About Content</h3>
                     <div class="add-form">
                         <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1976d2;">
-                            ℹ️ <strong>Auto-Translation:</strong> Enter text in English. Arabic translation will be generated automatically.
+                            ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic side by side.
                         </div>
                         <form id="aboutForm">
-                            <div class="form-group">
-                                <label>Content (English)</label>
-                                <textarea id="aboutContent" placeholder="Enter about section content..."></textarea>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <!-- English Side -->
+                                <div class="form-group">
+                                    <label>Content (English) *</label>
+                                    <textarea id="aboutContentEn" placeholder="Enter about section content..." style="min-height: 200px;" required></textarea>
+                                </div>
+                                
+                                <!-- Arabic Side -->
+                                <div class="form-group">
+                                    <label>Content (Arabic) *</label>
+                                    <textarea id="aboutContentAr" placeholder="أدخل محتوى قسم حول" style="min-height: 200px;" dir="rtl" required></textarea>
+                                </div>
                             </div>
+                            
                             <button type="submit" class="btn btn-success">Save About</button>
                         </form>
                     </div>
@@ -673,33 +840,54 @@
                     <h3>Add New Journey Item</h3>
                     <div class="add-form">
                         <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1976d2;">
-                            ℹ️ <strong>Auto-Translation:</strong> Enter text in English. Arabic translation will be generated automatically.
+                            ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic side by side.
                         </div>
                         <form id="journeyForm">
                             <input type="hidden" id="journeyId">
+                            
                             <div class="form-group">
                                 <label>Age / Year *</label>
                                 <input type="text" id="journeyAge" placeholder="e.g., Age 18, 2020, Year 5" required>
                             </div>
-                            <div class="form-group">
-                                <label>Title (English) *</label>
-                                <input type="text" id="journeyTitle" placeholder="e.g., Started University" required>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                <!-- English Side -->
+                                <div>
+                                    <div class="form-group">
+                                        <label>Title (English) *</label>
+                                        <input type="text" id="journeyTitleEn" placeholder="e.g., Started University" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description (English) *</label>
+                                        <textarea id="journeyBodyEn" placeholder="Enter a paragraph describing this milestone..." style="min-height: 150px;" required></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Arabic Side -->
+                                <div>
+                                    <div class="form-group">
+                                        <label>Title (Arabic) *</label>
+                                        <input type="text" id="journeyTitleAr" placeholder="مثال: بدأت الجامعة" dir="rtl" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description (Arabic) *</label>
+                                        <textarea id="journeyBodyAr" placeholder="أدخل فقرة تصف هذا الإنجاز..." style="min-height: 150px;" dir="rtl" required></textarea>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Description (English) *</label>
-                                <textarea id="journeyBody" placeholder="Enter a paragraph describing this milestone..." required></textarea>
-                            </div>
+                            
                             <div class="form-group">
                                 <label>Display Order</label>
                                 <input type="number" id="journeyOrder" value="0" placeholder="0 = first">
                             </div>
+                            
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-success" id="journeySubmitBtn">Add Journey Item</button>
                                 <button type="button" class="btn btn-secondary hidden" id="cancelJourneyEdit" onclick="cancelEditJourney()">Cancel</button>
                             </div>
                         </form>
                     </div>
-
+                    
                     <h3>All Journey Items (<span id="journeyCount">0</span>)</h3>
                     <div class="item-list" id="journeyList"></div>
                 </div>
@@ -713,26 +901,44 @@
                     <h3>Add New Experience</h3>
                     <div class="add-form">
                         <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1976d2;">
-                            ℹ️ <strong>Auto-Translation:</strong> Enter text in English. Arabic translation will be generated automatically.
+                            ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic side by side.
                         </div>
                         <form id="experienceForm">
                             <input type="hidden" id="expId">
-                            <div class="form-group">
-                                <label>Name (English) *</label>
-                                <input type="text" id="expName" placeholder="e.g., Bachelor of Science in Computer Science" required>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                <!-- English Side -->
+                                <div>
+                                    <div class="form-group">
+                                        <label>Name (English) *</label>
+                                        <input type="text" id="expNameEn" placeholder="e.g., Bachelor of Science in Computer Science" required>
+                                    </div>
+                                </div>
+                                
+                                <!-- Arabic Side -->
+                                <div>
+                                    <div class="form-group">
+                                        <label>Name (Arabic) *</label>
+                                        <input type="text" id="expNameAr" placeholder="مثل: بكالوريوس علوم الحاسب الآلي" dir="rtl" required>
+                                    </div>
+                                </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label>Date</label>
                                 <input type="date" id="expDate">
                             </div>
+                            
                             <div class="form-group checkbox-group">
                                 <input type="checkbox" id="expInProgress" onchange="toggleDateField()">
                                 <label style="margin: 0;">In Progress</label>
                             </div>
+                            
                             <div class="form-group">
                                 <label>Display Order</label>
                                 <input type="number" id="expOrder" value="0" placeholder="0 = first">
                             </div>
+                            
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-success" id="expSubmitBtn">Add Experience</button>
                                 <button type="button" class="btn btn-secondary hidden" id="cancelExpEdit" onclick="cancelEditExperience()">Cancel</button>
@@ -753,26 +959,47 @@
                     <h3>Add New Testimonial</h3>
                     <div class="add-form">
                         <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1976d2;">
-                            ℹ️ <strong>Auto-Translation:</strong> Enter text in English. Arabic translation will be generated automatically.
+                            ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic side by side.
                         </div>
                         <form id="testimonialForm">
                             <input type="hidden" id="testId">
+                            
                             <div class="form-group">
                                 <label>Client Name *</label>
                                 <input type="text" id="testName" placeholder="e.g., John Doe" required>
                             </div>
-                            <div class="form-group">
-                                <label>Comment/Review (English) *</label>
-                                <textarea id="testComment" placeholder="Enter client testimonial..." required></textarea>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                <!-- English Side -->
+                                <div>
+                                    <div class="form-group">
+                                        <label>Comment/Review (English) *</label>
+                                        <textarea id="testCommentEn" placeholder="Enter client testimonial in English..." style="min-height: 120px;" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Activity/Package (English)</label>
+                                        <input type="text" id="testPackageEn" placeholder="e.g., Website Development Package">
+                                    </div>
+                                </div>
+                                
+                                <!-- Arabic Side -->
+                                <div>
+                                    <div class="form-group">
+                                        <label>Comment/Review (Arabic) *</label>
+                                        <textarea id="testCommentAr" placeholder="أدخل شهادة العميل بالعربية..." style="min-height: 120px;" dir="rtl" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Activity/Package (Arabic)</label>
+                                        <input type="text" id="testPackageAr" placeholder="مثل: باقة تطوير الموقع الإلكتروني" dir="rtl">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Activity/Package (English)</label>
-                                <input type="text" id="testPackage" placeholder="e.g., Website Development Package">
-                            </div>
+                            
                             <div class="form-group">
                                 <label>Display Order</label>
                                 <input type="number" id="testOrder" value="0" placeholder="0 = first">
                             </div>
+                            
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-success" id="testSubmitBtn">Add Testimonial</button>
                                 <button type="button" class="btn btn-secondary hidden" id="cancelTestEdit" onclick="cancelEditTestimonial()">Cancel</button>
@@ -1022,33 +1249,48 @@
             loadGallery();
             loadContact();
         }
-
+        // HERO Tab
         async function loadHero() {
-            const data = await fetch(API_URL + '/hero').then(function(r) { return r.json(); });
+            const data = await fetch(API_URL + '/hero').then(r => r.json());
             
-            // Display only English content
             const titleEn = (data.title && data.title.en) ? data.title.en : 'Not set';
+            const titleAr = (data.title && data.title.ar) ? data.title.ar : 'غير محدد';
             const subtitleEn = (data.subtitle && data.subtitle.en) ? data.subtitle.en : 'Not set';
+            const subtitleAr = (data.subtitle && data.subtitle.ar) ? data.subtitle.ar : 'غير محدد';
             
-            document.getElementById('currentHeroTitle').innerHTML = '<span>EN: ' + titleEn + '</span>';
-            document.getElementById('currentHeroSubtitle').innerHTML = '<span>EN: ' + subtitleEn + '</span>';
-            document.getElementById('heroTitle').value = titleEn;
-            document.getElementById('heroSubtitle').value = subtitleEn;
+            // Display both languages
+            document.getElementById('currentHeroTitleEn').textContent = titleEn;
+            document.getElementById('currentHeroTitleAr').textContent = titleAr;
+            document.getElementById('currentHeroSubtitleEn').textContent = subtitleEn;
+            document.getElementById('currentHeroSubtitleAr').textContent = subtitleAr;
             
-            const imageContainer = document.getElementById('currentHeroImageContainer');
-            if (data.backgroundImageUrl) {
-                imageContainer.innerHTML = '<div style="margin-top: 15px;"><span class="current-label">Current Background:</span><img src="' + data.backgroundImageUrl + '" class="hero-image-preview" alt="Hero Background"><div class="image-actions"><button class="btn btn-danger btn-small" onclick="deleteHeroImage()">Delete Background Image</button></div></div>';
-            } else {
-                imageContainer.innerHTML = '<p style="margin-top: 10px; color: #999;">No background image set</p>';
-            }
+            // Populate form fields
+            document.getElementById('heroTitleEn').value = titleEn;
+            document.getElementById('heroTitleAr').value = titleAr;
+            document.getElementById('heroSubtitleEn').value = subtitleEn;
+            document.getElementById('heroSubtitleAr').value = subtitleAr;
         }
 
         document.getElementById('heroTextForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            const titleEn = document.getElementById('heroTitleEn').value;
+            const titleAr = document.getElementById('heroTitleAr').value;
+            const subtitleEn = document.getElementById('heroSubtitleEn').value;
+            const subtitleAr = document.getElementById('heroSubtitleAr').value;
+            
+            // Validation
+            if (!titleEn || !titleAr || !subtitleEn || !subtitleAr) {
+                showMessage('adminMessage', 'Please fill in both English and Arabic fields', true);
+                return;
+            }
+            
+            // Send bilingual data
             const hero = {
-                title: document.getElementById('heroTitle').value,
-                subtitle: document.getElementById('heroSubtitle').value
+                title: { en: titleEn, ar: titleAr },
+                subtitle: { en: subtitleEn, ar: subtitleAr }
             };
+            
             const data = await apiCall('/hero', 'PUT', hero);
             showMessage('adminMessage', data.message);
             loadHero();
@@ -1091,14 +1333,18 @@
             loadHero();
         }
 
+
+        // About Tab
         async function loadAbout() {
             const data = await fetch(API_URL + '/about').then(function(r) { return r.json(); });
             
-            // Display only English content
             const contentEn = (data.content && data.content.en) ? data.content.en : 'No content yet';
+            const contentAr = (data.content && data.content.ar) ? data.content.ar : 'لا يوجد محتوى بعد';
             
-            document.getElementById('currentAbout').innerHTML = '<p><strong>English:</strong> ' + contentEn + '</p>';
-            document.getElementById('aboutContent').value = contentEn;
+            document.getElementById('currentAboutEn').textContent = contentEn;
+            document.getElementById('currentAboutAr').textContent = contentAr;
+            document.getElementById('aboutContentEn').value = contentEn !== 'No content yet' ? contentEn : '';
+            document.getElementById('aboutContentAr').value = contentAr !== 'لا يوجد محتوى بعد' ? contentAr : '';
             
             const imageContainer = document.getElementById('currentProfileImageContainer');
             if (data.profileImageUrl) {
@@ -1110,8 +1356,20 @@
 
         document.getElementById('aboutForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const content = document.getElementById('aboutContent').value;
-            const data = await apiCall('/about', 'PUT', { content: content });
+            
+            const contentEn = document.getElementById('aboutContentEn').value.trim();
+            const contentAr = document.getElementById('aboutContentAr').value.trim();
+            
+            if (!contentEn || !contentAr) {
+                showMessage('adminMessage', 'Please fill in both English and Arabic content', true);
+                return;
+            }
+            
+            const aboutData = {
+                content: { en: contentEn, ar: contentAr }
+            };
+            
+            const data = await apiCall('/about', 'PUT', aboutData);
             showMessage('adminMessage', data.message);
             loadAbout();
         });
@@ -1153,6 +1411,8 @@
             loadAbout();
         }
 
+
+        // Journey Tab
         async function loadJourney() {
             const data = await fetch(API_URL + '/journey').then(function(r) { return r.json(); });
             const list = document.getElementById('journeyList');
@@ -1164,22 +1424,65 @@
             }
             
             list.innerHTML = data.map(function(item) {
-                // Display only English content
-                const title = (item.title && item.title.en) ? item.title.en : item.title;
-                const body = (item.body && item.body.en) ? item.body.en : item.body;
+                // Get both English and Arabic content
+                const titleEn = (item.title && item.title.en) ? item.title.en : (typeof item.title === 'string' ? item.title : 'Untitled');
+                const titleAr = (item.title && item.title.ar) ? item.title.ar : '';
+                const bodyEn = (item.body && item.body.en) ? item.body.en : (typeof item.body === 'string' ? item.body : '');
+                const bodyAr = (item.body && item.body.ar) ? item.body.ar : '';
                 
-                return '<div class="item"><div class="item-content"><strong>' + title + '</strong><span class="badge badge-success">' + item.age + '</span><small>' + body.substring(0, 150) + (body.length > 150 ? '...' : '') + '</small><div class="item-meta">Order: ' + item.order + ' | Added: ' + new Date(item.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editJourney(' + JSON.stringify(item) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteJourney(\'' + item._id + '\')">Delete</button></div></div>';
+                const bodyEnPreview = bodyEn.substring(0, 100) + (bodyEn.length > 100 ? '...' : '');
+                const bodyArPreview = bodyAr.substring(0, 100) + (bodyAr.length > 100 ? '...' : '');
+                
+                const itemStr = JSON.stringify(item);
+                const itemStrEscaped = itemStr.replace(/"/g, '&quot;');
+                
+                return '<div class="item">' +
+                    '<div class="item-content">' +
+                        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">' +
+                            '<span class="badge badge-success">' + item.age + '</span>' +
+                            '<span style="color: #999; font-size: 11px;">Order: ' + item.order + ' | Added: ' + new Date(item.createdAt).toLocaleDateString() + '</span>' +
+                        '</div>' +
+                        '<div class="journey-item-bilingual">' +
+                            '<div class="journey-item-lang">' +
+                                '<strong>English</strong>' +
+                                '<div style="font-weight: 600; margin-bottom: 5px;">' + titleEn + '</div>' +
+                                '<small style="color: #666;">' + bodyEnPreview + '</small>' +
+                            '</div>' +
+                            '<div class="journey-item-lang">' +
+                                '<strong>Arabic</strong>' +
+                                '<div style="font-weight: 600; margin-bottom: 5px;" dir="rtl">' + (titleAr || 'غير متوفر') + '</div>' +
+                                '<small style="color: #666;" dir="rtl">' + (bodyArPreview || 'غير متوفر') + '</small>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="item-actions">' +
+                        '<button class="btn btn-primary btn-small" onclick="editJourney(' + itemStrEscaped + ')">Edit</button>' +
+                        '<button class="btn btn-danger btn-small" onclick="deleteJourney(\'' + item._id + '\')">Delete</button>' +
+                    '</div>' +
+                '</div>';
             }).join('');
         }
 
         document.getElementById('journeyForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const id = document.getElementById('journeyId').value;
+            
+            const titleEn = document.getElementById('journeyTitleEn').value.trim();
+            const titleAr = document.getElementById('journeyTitleAr').value.trim();
+            const bodyEn = document.getElementById('journeyBodyEn').value.trim();
+            const bodyAr = document.getElementById('journeyBodyAr').value.trim();
+            const age = document.getElementById('journeyAge').value.trim();
+            
+            if (!titleEn || !titleAr || !bodyEn || !bodyAr || !age) {
+                showMessage('adminMessage', 'Please fill in all required fields in both languages', true);
+                return;
+            }
+            
             const journey = {
-                age: document.getElementById('journeyAge').value,
-                title: document.getElementById('journeyTitle').value,
-                body: document.getElementById('journeyBody').value,
-                order: parseInt(document.getElementById('journeyOrder').value)
+                age: age,
+                title: { en: titleEn, ar: titleAr },
+                body: { en: bodyEn, ar: bodyAr },
+                order: parseInt(document.getElementById('journeyOrder').value) || 0
             };
 
             const data = id ? await apiCall('/journey/' + id, 'PUT', journey) : await apiCall('/journey', 'POST', journey);
@@ -1195,12 +1498,19 @@
         function editJourney(item) {
             document.getElementById('journeyId').value = item._id;
             document.getElementById('journeyAge').value = item.age;
-            // Extract English content for editing
-            const title = (item.title && item.title.en) ? item.title.en : item.title;
-            const body = (item.body && item.body.en) ? item.body.en : item.body;
-            document.getElementById('journeyTitle').value = title;
-            document.getElementById('journeyBody').value = body;
+            
+            // Extract both English and Arabic content
+            const titleEn = (item.title && item.title.en) ? item.title.en : (typeof item.title === 'string' ? item.title : '');
+            const titleAr = (item.title && item.title.ar) ? item.title.ar : '';
+            const bodyEn = (item.body && item.body.en) ? item.body.en : (typeof item.body === 'string' ? item.body : '');
+            const bodyAr = (item.body && item.body.ar) ? item.body.ar : '';
+            
+            document.getElementById('journeyTitleEn').value = titleEn;
+            document.getElementById('journeyTitleAr').value = titleAr;
+            document.getElementById('journeyBodyEn').value = bodyEn;
+            document.getElementById('journeyBodyAr').value = bodyAr;
             document.getElementById('journeyOrder').value = item.order;
+            
             document.getElementById('journeySubmitBtn').textContent = 'Update Journey Item';
             document.getElementById('cancelJourneyEdit').classList.remove('hidden');
             document.getElementById('journeyForm').scrollIntoView({ behavior: 'smooth' });
@@ -1220,6 +1530,8 @@
             document.getElementById('cancelJourneyEdit').classList.add('hidden');
         }
 
+
+        //Experience tab
         async function loadExperiences() {
             const data = await fetch(API_URL + '/experience').then(function(r) { return r.json(); });
             const list = document.getElementById('experienceList');
@@ -1231,10 +1543,30 @@
             }
             
             list.innerHTML = data.map(function(exp) {
-                // Display only English content
-                const name = (exp.name && exp.name.en) ? exp.name.en : exp.name;
+                const nameEn = (exp.name && exp.name.en) ? exp.name.en : exp.name;
+                const nameAr = (exp.name && exp.name.ar) ? exp.name.ar : '';
                 
-                return '<div class="item"><div class="item-content"><strong>' + name + '</strong>' + (exp.inProgress ? '<span class="badge badge-warning">In Progress</span>' : '') + '<small>' + (exp.inProgress ? 'In Progress' : (exp.date || 'No date specified')) + '</small><div class="item-meta">Order: ' + exp.order + ' | Added: ' + new Date(exp.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editExperience(' + JSON.stringify(exp) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteExperience(\'' + exp._id + '\')">Delete</button></div></div>';
+                return `<div class="item">
+                    <div class="item-content">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                            <div>
+                                <strong style="display: block; margin-bottom: 8px;">English:</strong>
+                                <strong>${nameEn}</strong>
+                            </div>
+                            <div style="text-align: right; direction: rtl;">
+                                <strong style="display: block; margin-bottom: 8px;">العربية:</strong>
+                                <strong>${nameAr || 'No Arabic text'}</strong>
+                            </div>
+                        </div>
+                        ${exp.inProgress ? '<span class="badge badge-warning">In Progress</span>' : ''}
+                        <small>${exp.inProgress ? 'In Progress' : (exp.date || 'No date specified')}</small>
+                        <div class="item-meta">Order: ${exp.order} | Added: ${new Date(exp.createdAt).toLocaleDateString()}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-primary btn-small" onclick='editExperience(${JSON.stringify(exp)})'>Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteExperience('${exp._id}')">Delete</button>
+                    </div>
+                </div>`;
             }).join('');
         }
 
@@ -1249,7 +1581,10 @@
             e.preventDefault();
             const id = document.getElementById('expId').value;
             const exp = {
-                name: document.getElementById('expName').value,
+                name: {
+                    en: document.getElementById('expNameEn').value,
+                    ar: document.getElementById('expNameAr').value
+                },
                 date: document.getElementById('expDate').value,
                 inProgress: document.getElementById('expInProgress').checked,
                 order: parseInt(document.getElementById('expOrder').value)
@@ -1267,9 +1602,11 @@
 
         function editExperience(exp) {
             document.getElementById('expId').value = exp._id;
-            // Extract English content for editing
-            const name = (exp.name && exp.name.en) ? exp.name.en : exp.name;
-            document.getElementById('expName').value = name;
+            
+            // Set both English and Arabic values
+            document.getElementById('expNameEn').value = (exp.name && exp.name.en) ? exp.name.en : exp.name || '';
+            document.getElementById('expNameAr').value = (exp.name && exp.name.ar) ? exp.name.ar : '';
+            
             document.getElementById('expDate').value = exp.date || '';
             document.getElementById('expInProgress').checked = exp.inProgress;
             document.getElementById('expOrder').value = exp.order;
@@ -1293,6 +1630,8 @@
             document.getElementById('cancelExpEdit').classList.add('hidden');
         }
 
+
+        //Testimonials tab
         async function loadTestimonials() {
             const data = await fetch(API_URL + '/testimonial').then(function(r) { return r.json(); });
             const list = document.getElementById('testimonialList');
@@ -1304,11 +1643,38 @@
             }
             
             list.innerHTML = data.map(function(test) {
-                // Display only English content
-                const comment = (test.comment && test.comment.en) ? test.comment.en : test.comment;
-                const activityPackage = (test.activityPackage && test.activityPackage.en) ? test.activityPackage.en : test.activityPackage;
+                const commentEn = (test.comment && test.comment.en) ? test.comment.en : test.comment;
+                const commentAr = (test.comment && test.comment.ar) ? test.comment.ar : '';
+                const packageEn = (test.activityPackage && test.activityPackage.en) ? test.activityPackage.en : test.activityPackage;
+                const packageAr = (test.activityPackage && test.activityPackage.ar) ? test.activityPackage.ar : '';
                 
-                return '<div class="item"><div class="item-content"><strong>' + test.name + '</strong>' + (activityPackage ? '<span class="badge badge-success">' + activityPackage + '</span>' : '') + '<small>"' + comment + '"</small><div class="item-meta">Order: ' + test.order + ' | Added: ' + new Date(test.createdAt).toLocaleDateString() + '</div></div><div class="item-actions"><button class="btn btn-primary btn-small" onclick=\'editTestimonial(' + JSON.stringify(test) + ')\'>Edit</button><button class="btn btn-danger btn-small" onclick="deleteTestimonial(\'' + test._id + '\')">Delete</button></div></div>';
+                return `<div class="item">
+                    <div class="item-content">
+                        <strong>${test.name}</strong>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0;">
+                            <!-- English Content -->
+                            <div>
+                                <strong style="display: block; margin-bottom: 8px; color: #666; font-size: 12px;">English:</strong>
+                                ${packageEn ? `<span class="badge badge-success">${packageEn}</span>` : ''}
+                                <small>"${commentEn}"</small>
+                            </div>
+                            
+                            <!-- Arabic Content -->
+                            <div style="text-align: right; direction: rtl;">
+                                <strong style="display: block; margin-bottom: 8px; color: #666; font-size: 12px;">العربية:</strong>
+                                ${packageAr ? `<span class="badge badge-success">${packageAr}</span>` : ''}
+                                <small>"${commentAr || 'No Arabic text'}"</small>
+                            </div>
+                        </div>
+                        
+                        <div class="item-meta">Order: ${test.order} | Added: ${new Date(test.createdAt).toLocaleDateString()}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-primary btn-small" onclick='editTestimonial(${JSON.stringify(test)})'>Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteTestimonial('${test._id}')">Delete</button>
+                    </div>
+                </div>`;
             }).join('');
         }
 
@@ -1317,8 +1683,14 @@
             const id = document.getElementById('testId').value;
             const test = {
                 name: document.getElementById('testName').value,
-                comment: document.getElementById('testComment').value,
-                activityPackage: document.getElementById('testPackage').value,
+                comment: {
+                    en: document.getElementById('testCommentEn').value,
+                    ar: document.getElementById('testCommentAr').value
+                },
+                activityPackage: {
+                    en: document.getElementById('testPackageEn').value,
+                    ar: document.getElementById('testPackageAr').value
+                },
                 order: parseInt(document.getElementById('testOrder').value)
             };
 
@@ -1335,11 +1707,14 @@
         function editTestimonial(test) {
             document.getElementById('testId').value = test._id;
             document.getElementById('testName').value = test.name;
-            // Extract English content for editing
-            const comment = (test.comment && test.comment.en) ? test.comment.en : test.comment;
-            const activityPackage = (test.activityPackage && test.activityPackage.en) ? test.activityPackage.en : test.activityPackage;
-            document.getElementById('testComment').value = comment;
-            document.getElementById('testPackage').value = activityPackage || '';
+            
+            // Set both English and Arabic values
+            document.getElementById('testCommentEn').value = (test.comment && test.comment.en) ? test.comment.en : test.comment || '';
+            document.getElementById('testCommentAr').value = (test.comment && test.comment.ar) ? test.comment.ar : '';
+            
+            document.getElementById('testPackageEn').value = (test.activityPackage && test.activityPackage.en) ? test.activityPackage.en : test.activityPackage || '';
+            document.getElementById('testPackageAr').value = (test.activityPackage && test.activityPackage.ar) ? test.activityPackage.ar : '';
+            
             document.getElementById('testOrder').value = test.order;
             document.getElementById('testSubmitBtn').textContent = 'Update Testimonial';
             document.getElementById('cancelTestEdit').classList.remove('hidden');
@@ -1360,6 +1735,7 @@
             document.getElementById('cancelTestEdit').classList.add('hidden');
         }
 
+        //Gallery tab
         async function loadGallery() {
             const data = await fetch(API_URL + '/gallery').then(function(r) { return r.json(); });
             const grid = document.getElementById('galleryGrid');
@@ -1414,6 +1790,7 @@
             loadGallery();
         }
 
+        //CONTACTS Tab
         async function loadContact() {
             const data = await fetch(API_URL + '/contact').then(function(r) { return r.json(); });
             

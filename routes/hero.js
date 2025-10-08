@@ -32,16 +32,14 @@ router.get('/', async (req, res) => {
   try {
     let hero = await Hero.findOne();
     if (!hero) {
-      const defaultTitle = 'Welcome to My Portfolio';
-      const defaultSubtitle = 'Creative Professional';
       hero = await Hero.create({ 
         title: {
-          en: defaultTitle,
-          ar: await translateToArabic(defaultTitle)
+          en: 'Welcome to My Portfolio',
+          ar: 'مرحبا بكم في محفظتي'
         },
         subtitle: {
-          en: defaultSubtitle,
-          ar: await translateToArabic(defaultSubtitle)
+          en: 'Creative Professional',
+          ar: 'محترف مبدع'
         }
       });
     }
@@ -50,26 +48,15 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
-
 // Update hero text (protected) - Auto-translates to Arabic
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { title, subtitle } = req.body; // English content from user
+    const { title, subtitle } = req.body; // Expects { en: "...", ar: "..." }
     let hero = await Hero.findOne();
     
     const updates = {};
-    if (title !== undefined) {
-      updates.title = {
-        en: title,
-        ar: await translateToArabic(title)
-      };
-    }
-    if (subtitle !== undefined) {
-      updates.subtitle = {
-        en: subtitle,
-        ar: await translateToArabic(subtitle)
-      };
-    }
+    if (title !== undefined) updates.title = title;
+    if (subtitle !== undefined) updates.subtitle = subtitle;
     
     if (!hero) {
       hero = await Hero.create(updates);
@@ -80,7 +67,7 @@ router.put('/', authMiddleware, async (req, res) => {
       await hero.save();
     }
     
-    res.json({ message: 'Hero section updated (English & Arabic)', hero });
+    res.json({ message: 'Hero section updated', hero });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

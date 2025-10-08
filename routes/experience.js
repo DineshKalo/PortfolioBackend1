@@ -18,21 +18,16 @@ router.get('/', async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name, date, inProgress, order } = req.body;
-    
-    // Translate name to Arabic
-    const nameAr = await translateToArabic(name);
+    // name comes as { en: "...", ar: "..." }
     
     const experience = await Experience.create({
-      name: {
-        en: name,
-        ar: nameAr
-      },
+      name,
       date: inProgress ? null : date,
       inProgress,
       order: order || 0
     });
     
-    res.status(201).json({ message: 'Experience created (English & Arabic)', experience });
+    res.status(201).json({ message: 'Experience created', experience });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -44,14 +39,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const { name, date, inProgress, order } = req.body;
     
     const updates = {};
-    
-    if (name !== undefined) {
-      updates.name = {
-        en: name,
-        ar: await translateToArabic(name)
-      };
-    }
-    
+    if (name !== undefined) updates.name = name;
     if (date !== undefined) updates.date = inProgress ? null : date;
     if (inProgress !== undefined) updates.inProgress = inProgress;
     if (order !== undefined) updates.order = order;
@@ -66,7 +54,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Experience not found' });
     }
     
-    res.json({ message: 'Experience updated (English & Arabic)', experience });
+    res.json({ message: 'Experience updated', experience });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

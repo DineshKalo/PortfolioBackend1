@@ -18,25 +18,16 @@ router.get('/', async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { age, title, body, order } = req.body;
-    
-    // Translate title and body to Arabic
-    const titleAr = await translateToArabic(title);
-    const bodyAr = await translateToArabic(body);
+    // title and body come as { en: "...", ar: "..." }
     
     const journey = await Journey.create({
       age,
-      title: {
-        en: title,
-        ar: titleAr
-      },
-      body: {
-        en: body,
-        ar: bodyAr
-      },
+      title,
+      body,
       order: order || 0
     });
     
-    res.status(201).json({ message: 'Journey item created (English & Arabic)', journey });
+    res.status(201).json({ message: 'Journey item created', journey });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -50,20 +41,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const updates = {};
     if (age !== undefined) updates.age = age;
     if (order !== undefined) updates.order = order;
-    
-    if (title !== undefined) {
-      updates.title = {
-        en: title,
-        ar: await translateToArabic(title)
-      };
-    }
-    
-    if (body !== undefined) {
-      updates.body = {
-        en: body,
-        ar: await translateToArabic(body)
-      };
-    }
+    if (title !== undefined) updates.title = title;
+    if (body !== undefined) updates.body = body;
     
     const journey = await Journey.findByIdAndUpdate(
       req.params.id,
@@ -75,7 +54,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Journey item not found' });
     }
     
-    res.json({ message: 'Journey item updated (English & Arabic)', journey });
+    res.json({ message: 'Journey item updated', journey });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
