@@ -712,49 +712,58 @@
                     <h3>Current Hero Section</h3>
                     <div class="current-content">
                         <div id="currentHero">
-                            <p><strong>Title:</strong> <span id="currentHeroTitle"></span></p>
-                            <p><strong>Subtitle:</strong> <span id="currentHeroSubtitle"></span></p>
-                            <div id="currentHeroImageContainer"></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                <!-- English Side -->
+                                <div>
+                                    <h4>English</h4>
+                                    <p><strong>Title:</strong> <span id="currentHeroTitleEn">Not set</span></p>
+                                    <p><strong>Subtitle:</strong> <span id="currentHeroSubtitleEn">Not set</span></p>
+                                </div>
+                                
+                                <!-- Arabic Side -->
+                                <div style="text-align: right; direction: rtl;">
+                                    <h4>العربية</h4>
+                                    <p><strong>العنوان:</strong> <span id="currentHeroTitleAr">غير محدد</span></p>
+                                    <p><strong>العنوان الفرعي:</strong> <span id="currentHeroSubtitleAr">غير محدد</span></p>
+                                </div>
+                            </div>
+                            <div id="currentHeroImageContainer">
+                                <p style="color: #999;">No background image set</p>
+                            </div>
                         </div>
                     </div>
 
                     <h3>Update Hero Text</h3>
                     <div class="add-form">
                         <div style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1976d2;">
-                            ℹ️ <strong>Auto-Translation:</strong> Enter text in English. Arabic translation will be generated automatically.
+                            ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic.
                         </div>
                         <form id="heroTextForm">
-                            <div class="info-box">
-                                ℹ️ <strong>Manual Entry:</strong> Enter text in both English and Arabic.
-                            </div>
-                            
-                            <!-- Language Tabs
-                            <div class="language-tabs">
-                                <button type="button" class="lang-tab active" onclick="switchLangTab('hero', 'en', event)">English</button>
-                                <button type="button" class="lang-tab" onclick="switchLangTab('hero', 'ar', event)">Arabic</button>
-                            </div> -->
-                            
-                            <!-- English Content -->
-                            <div class="lang-content active" id="heroLangEn">
-                                <div class="form-group">
-                                    <label>Title (English)</label>
-                                    <input type="text" id="heroTitleEn" placeholder="Welcome to My Portfolio">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                <!-- English Side -->
+                                <div>
+                                    <h4>English</h4>
+                                    <div class="form-group">
+                                        <label>Title (English) *</label>
+                                        <input type="text" id="heroTitleEn" placeholder="Welcome to My Portfolio" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Subtitle (English) *</label>
+                                        <input type="text" id="heroSubtitleEn" placeholder="Creative Professional" required>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Subtitle (English)</label>
-                                    <input type="text" id="heroSubtitleEn" placeholder="Creative Professional">
-                                </div>
-                            </div>
-                            
-                            <!-- Arabic Content -->
-                            <div class="lang-content" id="heroLangAr">
-                                <div class="form-group">
-                                    <label>Title (Arabic)</label>
-                                    <input type="text" id="heroTitleAr" placeholder="مرحبا بكم في محفظتي" dir="rtl">
-                                </div>
-                                <div class="form-group">
-                                    <label>Subtitle (Arabic)</label>
-                                    <input type="text" id="heroSubtitleAr" placeholder="محترف مبدع" dir="rtl">
+                                
+                                <!-- Arabic Side -->
+                                <div>
+                                    <h4 style="text-align: right; direction: rtl;">العربية</h4>
+                                    <div class="form-group">
+                                        <label>Title (Arabic) *</label>
+                                        <input type="text" id="heroTitleAr" placeholder="مرحبا بكم في محفظتي" dir="rtl" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Subtitle (Arabic) *</label>
+                                        <input type="text" id="heroSubtitleAr" placeholder="محترف مبدع" dir="rtl" required>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -774,7 +783,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- About Tab -->
             <div class="tab-content" id="aboutTab">
                 <div class="section">
@@ -1251,33 +1259,60 @@
         }
         // HERO Tab
         async function loadHero() {
-            const data = await fetch(API_URL + '/hero').then(r => r.json());
-            
-            const titleEn = (data.title && data.title.en) ? data.title.en : 'Not set';
-            const titleAr = (data.title && data.title.ar) ? data.title.ar : 'غير محدد';
-            const subtitleEn = (data.subtitle && data.subtitle.en) ? data.subtitle.en : 'Not set';
-            const subtitleAr = (data.subtitle && data.subtitle.ar) ? data.subtitle.ar : 'غير محدد';
-            
-            // Display both languages
-            document.getElementById('currentHeroTitleEn').textContent = titleEn;
-            document.getElementById('currentHeroTitleAr').textContent = titleAr;
-            document.getElementById('currentHeroSubtitleEn').textContent = subtitleEn;
-            document.getElementById('currentHeroSubtitleAr').textContent = subtitleAr;
-            
-            // Populate form fields
-            document.getElementById('heroTitleEn').value = titleEn;
-            document.getElementById('heroTitleAr').value = titleAr;
-            document.getElementById('heroSubtitleEn').value = subtitleEn;
-            document.getElementById('heroSubtitleAr').value = subtitleAr;
+            try {
+                const response = await fetch(API_URL + '/hero');
+                const data = await response.json();
+                
+                // Extract English and Arabic content with fallbacks
+                const titleEn = (data.title && data.title.en) ? data.title.en : 'Not set';
+                const titleAr = (data.title && data.title.ar) ? data.title.ar : 'غير محدد';
+                const subtitleEn = (data.subtitle && data.subtitle.en) ? data.subtitle.en : 'Not set';
+                const subtitleAr = (data.subtitle && data.subtitle.ar) ? data.subtitle.ar : 'غير محدد';
+                
+                // Display both languages in current content
+                document.getElementById('currentHeroTitleEn').textContent = titleEn;
+                document.getElementById('currentHeroTitleAr').textContent = titleAr;
+                document.getElementById('currentHeroSubtitleEn').textContent = subtitleEn;
+                document.getElementById('currentHeroSubtitleAr').textContent = subtitleAr;
+                
+                // Populate form fields
+                document.getElementById('heroTitleEn').value = titleEn;
+                document.getElementById('heroTitleAr').value = titleAr;
+                document.getElementById('heroSubtitleEn').value = subtitleEn;
+                document.getElementById('heroSubtitleAr').value = subtitleAr;
+                
+                // Handle background image display
+                const imageContainer = document.getElementById('currentHeroImageContainer');
+                if (data.backgroundImageUrl) {
+                    imageContainer.innerHTML = `
+                        <div style="margin-top: 15px;">
+                            <span class="current-label">Current Background Image:</span>
+                            <div style="margin-top: 10px;">
+                                <img src="${data.backgroundImageUrl}" 
+                                    style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd;" 
+                                    alt="Hero Background">
+                            </div>
+                            <div class="image-actions" style="margin-top: 10px;">
+                                <button class="btn btn-danger btn-small" onclick="deleteHeroImage()">Delete Background Image</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    imageContainer.innerHTML = '<p style="margin-top: 10px; color: #999;">No background image set</p>';
+                }
+            } catch (error) {
+                console.error('Error loading hero section:', error);
+                showMessage('adminMessage', 'Failed to load hero section', true);
+            }
         }
 
         document.getElementById('heroTextForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const titleEn = document.getElementById('heroTitleEn').value;
-            const titleAr = document.getElementById('heroTitleAr').value;
-            const subtitleEn = document.getElementById('heroSubtitleEn').value;
-            const subtitleAr = document.getElementById('heroSubtitleAr').value;
+            const titleEn = document.getElementById('heroTitleEn').value.trim();
+            const titleAr = document.getElementById('heroTitleAr').value.trim();
+            const subtitleEn = document.getElementById('heroSubtitleEn').value.trim();
+            const subtitleAr = document.getElementById('heroSubtitleAr').value.trim();
             
             // Validation
             if (!titleEn || !titleAr || !subtitleEn || !subtitleAr) {
@@ -1285,15 +1320,19 @@
                 return;
             }
             
-            // Send bilingual data
-            const hero = {
-                title: { en: titleEn, ar: titleAr },
-                subtitle: { en: subtitleEn, ar: subtitleAr }
-            };
-            
-            const data = await apiCall('/hero', 'PUT', hero);
-            showMessage('adminMessage', data.message);
-            loadHero();
+            try {
+                // Send bilingual data
+                const hero = {
+                    title: { en: titleEn, ar: titleAr },
+                    subtitle: { en: subtitleEn, ar: subtitleAr }
+                };
+                
+                const data = await apiCall('/hero', 'PUT', hero);
+                showMessage('adminMessage', data.message);
+                loadHero(); // Reload to show updated content
+            } catch (error) {
+                showMessage('adminMessage', 'Failed to update hero text', true);
+            }
         });
 
         document.getElementById('heroImageForm').addEventListener('submit', async function(e) {
@@ -1317,7 +1356,7 @@
                 const data = await apiCall('/hero/background-image', 'POST', formData, true);
                 showMessage('adminMessage', data.message);
                 e.target.reset();
-                loadHero();
+                loadHero(); // Reload to show new image
             } catch (error) {
                 showMessage('adminMessage', 'Upload failed', true);
             } finally {
@@ -1328,9 +1367,14 @@
 
         async function deleteHeroImage() {
             if (!confirm('Are you sure you want to delete the hero background image?')) return;
-            const data = await apiCall('/hero/background-image', 'DELETE');
-            showMessage('adminMessage', data.message);
-            loadHero();
+            
+            try {
+                const data = await apiCall('/hero/background-image', 'DELETE');
+                showMessage('adminMessage', data.message);
+                loadHero(); // Reload to reflect deletion
+            } catch (error) {
+                showMessage('adminMessage', 'Failed to delete image', true);
+            }
         }
 
 
